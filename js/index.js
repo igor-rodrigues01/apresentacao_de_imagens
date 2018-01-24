@@ -1,6 +1,6 @@
 function Main(){
 	
-	this.map             = L.map('map').setView([-15.77, -47.92], 6);
+	this.map             = L.map('map').setView([-15.77, -47.92], 5);
 	this.layerOSMBaseMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	});
@@ -10,17 +10,31 @@ function Main(){
 
 	this.controlSwitch = function(layerRio,layerCatalogo,LayerViaturas){
 
-		var baseLayer = {
+		/*var baseLayer = {
 			'<span style="font-size:12pt"><b>Osm</b></span>':this.layerOSMBaseMap,
 			'<span style="font-size:12pt"><b>Thunder Forest</b></span>':this.thunderforest
 		}
 		var layers  = {
-			// '<span style="font-size:12pt"><b>Osm</b></span>':this.layerOSMBaseMap,
 			'<span style="font-size:12pt"><b>Rio</b></span>':layerRio,
 			'<span style="font-size:12pt"><b>Catalogo</b></span>':layerCatalogo,
 			'<span style="font-size:12pt"><b>Viaturas</b></span>':LayerViaturas
 		}
 		L.control.layers(baseLayer,layers).addTo(this.map)
+		*/
+
+		// E necessario ter instalado o bootstrap-switch-master e leaflet-switchcontrol
+		var control = new L.control.switch(
+			{
+			 	"OSM": {layer: this.layerOSMBaseMap},
+			  	"Thunder": {layer: this.thunderforest}
+			},
+			{
+				"Rio":{layer:layerRio},
+				"Catalogo":{layer:layerCatalogo},
+				"Viaturas":{layer:LayerViaturas}
+			}
+		).addTo(this.map)
+
 	}
 
 	this.generateMap = function(){
@@ -46,17 +60,17 @@ function Main(){
 		var viaturas =  L.tileLayer.wms(
 			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
 			dataRequestViaturas
-		).addTo(this.map)
+		)
 
 		var rio = L.tileLayer.wms(
 			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
 			dataRequestRio
-		).addTo(this.map)
+		)
 
 		var imageCatalogo = L.tileLayer.wms(
 			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
 			dataRequestImageCatalogo
-		).addTo(this.map)
+		)
 
 		this.controlSwitch(rio,imageCatalogo,viaturas)
 	}
