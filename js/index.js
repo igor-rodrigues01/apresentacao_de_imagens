@@ -1,6 +1,6 @@
 function Main(){
 	
-	this.map             = L.map('map').setView([-15.77, -47.92], 5);
+	this.map             = L.map('map')
 	this.layerOSMBaseMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 	});
@@ -8,75 +8,59 @@ function Main(){
 		maxZoom: 18
 	});
 
-	this.controlSwitch = function(layerRio,layerCatalogo,LayerViaturas){
-
-		/*var baseLayer = {
-			'<span style="font-size:12pt"><b>Osm</b></span>':this.layerOSMBaseMap,
-			'<span style="font-size:12pt"><b>Thunder Forest</b></span>':this.thunderforest
-		}
-		var layers  = {
-			'<span style="font-size:12pt"><b>Rio</b></span>':layerRio,
-			'<span style="font-size:12pt"><b>Catalogo</b></span>':layerCatalogo,
-			'<span style="font-size:12pt"><b>Viaturas</b></span>':LayerViaturas
-		}
-		L.control.layers(baseLayer,layers).addTo(this.map)
-		*/
+	this.controlSwitch = function(LayerAlvos,layerRodovia,layerBuffer,layerBR_070){
 
 		// E necessario ter instalado o bootstrap-switch-master e leaflet-switchcontrol
 		var control = new L.control.switch(
 			{
 			 	"OSM": {layer: this.layerOSMBaseMap},
-			  	"Thunder": {layer: this.thunderforest}
+			  	// "Thunder": {layer: this.thunderforest}
 			},
 			{
-				"Rio":{layer:layerRio},
-				"Catalogo":{layer:layerCatalogo},
-				"Viaturas":{layer:LayerViaturas}
+				"Alvos":{layer:LayerAlvos},
+				"Rodovia":{layer:layerRodovia},
+				"Rodovias Buffer":{layer:layerBuffer},
+				"BR 070":{layer:layerBR_070},
+				// "BR 101":{layer:layerBR_101},
+				// "BR 116":{layer:layerBR_116}
 			},{},{
 			  removable: false,
 			}
 		).addTo(this.map)
 
+		if (this.map._leaflet_id != 3){
+			this.map.setView([-15.77, -47.92], 10);
+		}
+	}
+
+	this.processGeojson = function(){
+
+		//var geojson = L.geoJson()
+		//alert(geojson)
+
+	}
+
+	this.getByWMS = function(layerName){
+		var url = 'http://10.1.8.95:8080/geoserver/hex/wms/'
+		var dataRequest = {
+			layers:layerName,
+			format: "image/png",
+			transparent:true
+		}
+		return L.tileLayer.wms(url,dataRequest)
 	}
 
 	this.generateMap = function(){
-
+		this.map.setView([-15.77, -47.92], 5);
 		this.layerOSMBaseMap.addTo(this.map)
 
-		// settings data to wms request
-		var dataRequestRio = {
-			layers:'publica:img_foto_rio_doce_p',
-			format: "image/png",
-			transparent:true
-		}
-		var dataRequestImageCatalogo = {
-			layers:'publica:img_catalogo_landsat_a',
-			format:'image/png',
-			transparent:true
-		}
-		var dataRequestViaturas = {
-			layers:'publica:adm_edif_pub_civil_ibama_p',
-			format: "image/png",
-			transparent:true
-		}
+		var layerAlvos   = this.getByWMS('hex:alvos')
+		var layerRodovia = this.getByWMS('hex:rodovias')
+		var layerBuffer  = this.getByWMS('hex:rodovias_buffer')
+		var layerBR_070  = this.getByWMS('hex:BR 070')
 
-		// get data by wms
-		var viaturas =  L.tileLayer.wms(
-			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
-			dataRequestViaturas
-		)
-
-		var rio = L.tileLayer.wms(
-			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
-			dataRequestRio
-		)
-
-		var imageCatalogo = L.tileLayer.wms(
-			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
-			dataRequestImageCatalogo
-		)
-
-		this.controlSwitch(rio,imageCatalogo,viaturas)
+		this.controlSwitch(layerAlvos,layerRodovia,layerBuffer,layerBR_070)
+		this.processGeojson()
 	}
 }
 
