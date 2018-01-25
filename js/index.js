@@ -32,6 +32,8 @@ function Main(){
 				"Rio":{layer:layerRio},
 				"Catalogo":{layer:layerCatalogo},
 				"Viaturas":{layer:LayerViaturas}
+			},{},{
+			  removable: false,
 			}
 		).addTo(this.map)
 
@@ -41,6 +43,7 @@ function Main(){
 
 		this.layerOSMBaseMap.addTo(this.map)
 
+		// settings data to wms request
 		var dataRequestRio = {
 			layers:'publica:img_foto_rio_doce_p',
 			format: "image/png",
@@ -56,6 +59,7 @@ function Main(){
 			format: "image/png",
 			transparent:true
 		}
+
 		// get data by wms
 		var viaturas =  L.tileLayer.wms(
 			'http://siscom.ibama.gov.br/geoserver/publica/wms', 
