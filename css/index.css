@@ -2,5 +2,9 @@ html, body {
 	height: 100%;
 }
 #map {
- 	height: 100%; 
+ 	height: 91.7%; 
+}
+#hexLogo{
+	width: 200px;
+	margin:-12px 0px -29px 20px;
 }
