@@ -7,9 +7,9 @@ function Main(){
 	this.thunderforest = L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
 		maxZoom: 18
 	});
-
+	
 	this.controlSwitch = function(
-			LayerAlvos,layerRodovia,layerBuffer,
+			LayerAlvos,layerRodovia,layerBuffer,layerAlvosBR_070,layerAlvosBR_101,layerAlvosBR_116,
 			layerBR_070_2231825_2011_07_02,layerBR_070_2231825_2012_05_08,
 			layerBR_070_2231825_2014_08_05,layerBR_070_2231826_2011_06_20,
 			layerBR_070_2231826_2012_07_13,layerBR_070_2231827_2011_06_20,
@@ -48,9 +48,11 @@ function Main(){
 				'BR 070 2231825 05/08/2014':{layer:layerBR_070_2231825_2014_08_05},
 				'BR 101 2226023 07/10/2014':{layer:layerBR_101_2226023_2014_10_07},
 				'BR 101 2226024 07/10/2014':{layer:layerBR_101_2226024_2014_10_07},
-				"Alvos":{layer:LayerAlvos},
-				"Rodovia":{layer:layerRodovia},
-				"Rodovias Buffer":{layer:layerBuffer}
+				"Alvos BR 070":{layer:layerAlvosBR_070},
+				"Alvos BR 101":{layer:layerAlvosBR_101},
+				"Alvos BR 116":{layer:layerAlvosBR_116},
+				"Rodovias Buffer":{layer:layerBuffer},
+				"Rodovia":{layer:layerRodovia}
 			},{},{
 			  removable: false,
 			}
@@ -65,9 +67,20 @@ function Main(){
 			transparent:true,
 		}
 		switch(layerName){
-			case 'hex:alvos':
-				dataRequest.cent = [-15.77, -47.92]; 
-				dataRequest.zoom = 5; 
+			
+			case 'hex:alvos_br070':
+				dataRequest.cent = [-15.799769,-47.997894]; 
+				dataRequest.zoom = 7; 
+				break;
+
+			case 'hex:alvos_br101':
+				dataRequest.cent = [-28.429298, -48.869934]; 
+				dataRequest.zoom = 8; 
+				break;
+
+			case 'hex:alvos_br116':
+				dataRequest.cent = [-3.818695, -38.545532]; 
+				dataRequest.zoom = 8; 
 				break;
 
 			case 'hex:rodovias':
@@ -77,7 +90,7 @@ function Main(){
 
 			case 'hex:rodovias_buffer':
 				dataRequest.cent = [-15.77, -47.92]; 
-				dataRequest.zoom = 5;
+				dataRequest.zoom = 8;
 				break;
 		}
 		return dataRequest
@@ -94,8 +107,12 @@ function Main(){
 		this.layerOSMBaseMap.addTo(this.map)
 
 		var layerAlvos   = this.getByWMS('hex:alvos')
-		var layerRodovia = this.getByWMS('hex:rodovias')
-		var layerBuffer  = this.getByWMS('hex:rodovias_buffer')
+
+		var layerAlvosBR_070 = this.getByWMS('hex:alvos_br070')
+		var layerAlvosBR_101 = this.getByWMS('hex:alvos_br101')
+		var layerAlvosBR_116 = this.getByWMS('hex:alvos_br116')
+		var layerRodovia     = this.getByWMS('hex:rodovias')
+		var layerBuffer      = this.getByWMS('hex:rodovias_buffer')
 
 		var layerBR_070_2231825_2011_07_02 = this.getByWMS('hex:BR 070 - 2231825_2011-07-02')
 		var layerBR_070_2231825_2012_05_08 = this.getByWMS('hex:BR 070 - 2231825_2012-05-08')
@@ -121,29 +138,67 @@ function Main(){
 		var layerBR_116_2437317_2012_10_07 = this.getByWMS('hex:BR 116 - 2437317_2012-10-07')
 		var layerBR_116_2437317_2014_07_10 = this.getByWMS('hex:BR 116 - 2437317_2014-07-10')
 
-		this.map.on('layeradd',function(layerDeCima){
-			var currentLayerId ;
+		// Opera 8.0+
+		var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+		// Firefox 1.0+
+		var isFirefox = typeof InstallTrigger !== 'undefined';
+		// Chrome 1+
+		var isChrome = !!window.chrome && !!window.chrome.webstore;
 
-			this.eachLayer(onEach.bind(this))
+		function onAddLayer (layerDeCima){
+			var currentLayerId ;
 
 			function onEach (layer){
 				
-				switch(layer._leaflet_id){
-					case 104:
-						this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+				if (isChrome || isOpera){
+					switch(layer._leaflet_id){
+						case 104:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 105:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 106:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 107:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 108:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+					}	
+				}
+
+				if (isFirefox){
+					switch(layer._leaflet_id){
+						case 88:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 89:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 90:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 91:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
+							break;
+						case 92:
+							this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
 						break;
-					case 105:
-						this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
-						break;
-					case 106:
-						this.setView(layer.wmsParams.cent,layer.wmsParams.zoom);
-						break;
+					}
 				}
 			}
-		});
+
+			this.eachLayer(onEach.bind(this))
+			
+		}
+
+		this.map.on('layeradd', onAddLayer);
 
 		this.controlSwitch(
-			layerAlvos,layerRodovia,layerBuffer,
+			layerAlvos,layerRodovia,layerBuffer,layerAlvosBR_070,layerAlvosBR_101,layerAlvosBR_116,
 			layerBR_070_2231825_2011_07_02,layerBR_070_2231825_2012_05_08,
 			layerBR_070_2231825_2014_08_05,layerBR_070_2231826_2011_06_20,
 			layerBR_070_2231826_2012_07_13,layerBR_070_2231827_2011_06_20,
@@ -162,8 +217,3 @@ function Main(){
 main = new Main()
 main.generateMap()
 
-
-// 26 - basemap
-// 83 - alvos
-// 84 - Rodovia
-// 85 - Rodovia Buffer
